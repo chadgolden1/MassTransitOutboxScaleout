@@ -1,0 +1,58 @@
+version: "3.6"
+services:
+  rabbitmq:
+    image: masstransit/rabbitmq:latest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  db:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    container_name: db
+    hostname: db
+    environment:
+      - "SA_PASSWORD=Password12!"
+      - "ACCEPT_EULA=y"
+    ports:
+      - 1433:1433
+  createdb:
+    image: createdb
+    environment: 
+     - ASPNETCORE_ENVIRONMENT=Development
+     - ConnectionStrings__Default=Server=db;Database=Registration;User=sa;Password=Password12!;
+    build:
+      context: ./src
+      dockerfile: Dockerfile.createdb
+    depends_on:
+            - db
+  producer:
+    image: producer
+    environment: 
+     - ASPNETCORE_ENVIRONMENT=Development
+     - ConnectionStrings__Default=Server=db;Database=Registration;User=sa;Password=Password12!;
+    build:
+      context: ./src
+      dockerfile: Dockerfile.producer
+    depends_on:
+            - createdb
+            - rabbitmq
+  consumer:
+    image: consumer
+    environment: 
+     - ASPNETCORE_ENVIRONMENT=Development
+     - ConnectionStrings__Default=Server=db;Database=Registration;User=sa;Password=Password12!;
+    build:
+      context: ./src
+      dockerfile: Dockerfile.consumer
+    depends_on:
+            - createdb
+            - rabbitmq
+  sweeper:
+    image: sweeper
+    environment: 
+     - ASPNETCORE_ENVIRONMENT=Development
+     - ConnectionStrings__Default=Server=db;Database=Registration;User=sa;Password=Password12!;
+    build:
+      context: ./src
+      dockerfile: Dockerfile.sweeper
+    depends_on:
+            - producer

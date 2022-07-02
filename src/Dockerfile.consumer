@@ -1,0 +1,13 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["Consumer/Consumer.csproj", "Consumer/"]
+COPY ["Components/Components.csproj", "Components/"]
+RUN dotnet restore "Consumer/Consumer.csproj"
+
+COPY . .
+RUN dotnet publish -c Release -o /app Consumer/Consumer.csproj 
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS publish
+WORKDIR /app
+COPY --from=build /app ./
+ENTRYPOINT ["/bin/bash", "-c", "sleep 20 && dotnet Consumer.dll"]

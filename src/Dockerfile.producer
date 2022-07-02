@@ -1,0 +1,13 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["Producer/Producer.csproj", "Producer/"]
+COPY ["Components/Components.csproj", "Components/"]
+RUN dotnet restore "Producer/Producer.csproj"
+
+COPY . .
+RUN dotnet publish -c Release -o /app Producer/Producer.csproj 
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS publish
+WORKDIR /app
+COPY --from=build /app ./
+ENTRYPOINT ["/bin/bash", "-c", "sleep 20 && dotnet Producer.dll"]
