@@ -20,6 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		src\Dockerfile.createdb = src\Dockerfile.createdb
 		src\Dockerfile.producer = src\Dockerfile.producer
 		src\Dockerfile.sweeper = src\Dockerfile.sweeper
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global

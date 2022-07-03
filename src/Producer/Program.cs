@@ -47,7 +47,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         });
         
         // simulate several client apps producing messages
-        foreach (var i in Enumerable.Range(0, 3))
+        foreach (var i in Enumerable.Range(0, 8))
         {
             services.AddSingleton<IHostedService, SubmitRegistrationWorker>();
         }

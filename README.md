@@ -4,11 +4,15 @@ Trying out some scenarios with MassTransit's Transactional Outbox.
 This sample is inspired heavily by the MassTransit [sample transactional outbox application](https://github.com/MassTransit/Sample-Outbox).
 
 # How to run (Docker)
+This will spin up a SQL Server, RabbitMQ, create the database, and run the entire sample.
 ```
-docker-compose up --build
+docker compose up --build
 ```
 
-This will spin up a SQL Server, RabbitMQ, create the database, and run the entire sample.
+## Run with multiple sweepers
+```
+docker compose up --build --scale sweeper=4
+```
 
 # Architecture
 This simple application uses the **Producer** to write messages to the outbox. A separate **Sweeper** service polls the messages written to the outbox table, and delivers them to the broker (RabbitMQ). The **Consumer** simply consumes the messages.
